@@ -346,7 +346,7 @@
     position: relative;
     z-index: 1;
     width: 100%;
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px 40px;
   }
@@ -360,83 +360,59 @@
     letter-spacing: 0.08em;
   }
 
-  .highlights-carousel {
-    display: flex;
-    gap: 16px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding: 10px 0 20px;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255,70,85,0.3) transparent;
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 20px;
   }
-  .highlights-carousel::-webkit-scrollbar { height: 6px; }
-  .highlights-carousel::-webkit-scrollbar-thumb { background: rgba(255,70,85,0.3); border-radius: 3px; }
-  .highlights-carousel::-webkit-scrollbar-track { background: transparent; }
 
-  .highlight-card {
-    flex: 0 0 300px;
-    scroll-snap-align: start;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 70, 85, 0.25);
+  .video-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 70, 85, 0.2);
     border-radius: 12px;
-    padding: 20px;
-    transition: all 0.3s ease;
-    position: relative;
     overflow: hidden;
+    transition: all 0.3s ease;
     backdrop-filter: blur(10px);
   }
 
-  .highlight-card:hover {
+  .video-card:hover {
     border-color: #ff4655;
     box-shadow: 0 8px 30px rgba(255, 70, 85, 0.2);
     transform: translateY(-4px);
   }
 
-  .highlight-card .hl-weapon {
-    font-size: 2.8rem;
-    margin-bottom: 10px;
+  .video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    background: #000;
   }
 
-  .highlight-card .hl-kill-type {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #ff4655;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    margin-bottom: 8px;
-  }
-
-  .highlight-card .hl-desc {
-    font-size: 1.05rem;
-    color: #ddd;
-    line-height: 1.5;
-    font-weight: 700;
-  }
-
-  .highlight-card .hl-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 14px;
-    font-size: 0.8rem;
-    color: #888;
-  }
-
-  .highlight-card .hl-damage {
-    color: #ff4655;
-    font-weight: 700;
-  }
-
-  .highlight-card::before {
-    content: '';
+  .video-wrapper iframe {
     position: absolute;
     top: 0; left: 0;
-    width: 100%; height: 2px;
-    background: linear-gradient(90deg, transparent, #ff4655, transparent);
-    opacity: 0;
-    transition: opacity 0.3s;
+    width: 100%; height: 100%;
+    border: none;
+    border-radius: 12px 12px 0 0;
   }
-  .highlight-card:hover::before { opacity: 1; }
+
+  .video-info {
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    color: #ccc;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .video-meta {
+    padding: 0 16px 12px;
+    font-size: 0.75rem;
+    color: #888;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .video-meta .views { color: #ff4655; }
 
   /* Live kill feed */
   .kill-feed {
@@ -791,62 +767,41 @@
 
 <!-- === 高手击杀集锦 === -->
 <div class="highlights-section">
-  <div class="highlights-title">🔥 高手击杀集锦</div>
-  <div class="highlights-carousel" id="highlightsCarousel">
-    <div class="highlight-card">
-      <div class="hl-kill-type">ACE · 团灭</div>
-      <div class="hl-weapon">🔫</div>
-      <div class="hl-desc">唐保光 残局 1v5，一梭子带走全部敌人</div>
-      <div class="hl-meta">
-        <span>📍 亚海悬城</span>
-        <span class="hl-damage">💥 750伤害</span>
+  <div class="highlights-title">🔥 高手击杀集锦 · 视频</div>
+  <div class="video-grid">
+
+    <div class="video-card">
+      <div class="video-wrapper">
+        <iframe src="//player.bilibili.com/player.html?bvid=BV1RD4y1U7FU&page=1&autoplay=0&danmaku=1" allowfullscreen loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
       </div>
+      <div class="video-info">Shroud 瓦洛兰特击杀集锦 — 游戏结束照样爆头</div>
+      <div class="video-meta"><span>🎯 高光时刻</span><span class="views">📺 64.3万播放</span></div>
     </div>
-    <div class="highlight-card">
-      <div class="hl-kill-type">ONE TAP · 一枪头</div>
-      <div class="hl-weapon">🔫</div>
-      <div class="hl-desc">唐保光 戍卫单点爆头，150m外一枪秒杀</div>
-      <div class="hl-meta">
-        <span>📍 源工重镇</span>
-        <span class="hl-damage">🎯 爆头</span>
+
+    <div class="video-card">
+      <div class="video-wrapper">
+        <iframe src="//player.bilibili.com/player.html?bvid=BV1SJ4m1e74K&page=1&autoplay=0&danmaku=1" allowfullscreen loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
       </div>
+      <div class="video-info">教科书般的残局操作，个人能力极致体现</div>
+      <div class="video-meta"><span>🎯 残局教学</span><span class="views">📺 61.7万播放</span></div>
     </div>
-    <div class="highlight-card">
-      <div class="hl-kill-type">COLLATERAL · 一穿二</div>
-      <div class="hl-weapon">🔫</div>
-      <div class="hl-desc">唐保光 冥驹穿墙双杀，一发子弹两个头</div>
-      <div class="hl-meta">
-        <span>📍 极寒冰港</span>
-        <span class="hl-damage">💀 双杀</span>
+
+    <div class="video-card">
+      <div class="video-wrapper">
+        <iframe src="//player.bilibili.com/player.html?bvid=BV1RUpLz5Eyp&page=1&autoplay=0&danmaku=1" allowfullscreen loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
       </div>
+      <div class="video-info">最不可思议的连杀高光时刻！扫射连杀</div>
+      <div class="video-meta"><span>🎯 连杀集锦</span><span class="views">📺 50.2万播放</span></div>
     </div>
-    <div class="highlight-card">
-      <div class="hl-kill-type">WALLBANG · 穿墙</div>
-      <div class="hl-weapon">🔫</div>
-      <div class="hl-desc">唐保光 判官穿烟三杀，敌人根本看不见</div>
-      <div class="hl-meta">
-        <span>📍 微風岛屿</span>
-        <span class="hl-damage">🔥 三杀</span>
+
+    <div class="video-card">
+      <div class="video-wrapper">
+        <iframe src="//player.bilibili.com/player.html?bvid=BV1n64ReEEmv&page=1&autoplay=0&danmaku=1" allowfullscreen loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
       </div>
+      <div class="video-info">国服高手连杀高光合集 · 200+投稿精选</div>
+      <div class="video-meta"><span>🎯 国服高手</span><span class="views">📺 24.8万播放</span></div>
     </div>
-    <div class="highlight-card">
-      <div class="hl-kill-type">KNIFE · 刀杀</div>
-      <div class="hl-weapon">🔪</div>
-      <div class="hl-desc">唐保光 背身刀杀，对面直接破防公屏打字</div>
-      <div class="hl-meta">
-        <span>📍 隐世修所</span>
-        <span class="hl-damage">😱 羞辱</span>
-      </div>
-    </div>
-    <div class="highlight-card">
-      <div class="hl-kill-type">ULTRA · 大招四杀</div>
-      <div class="hl-weapon">💣</div>
-      <div class="hl-desc">唐保光 雷兹大招炸飞四个，队友狂刷666</div>
-      <div class="hl-meta">
-        <span>📍 深海遗珠</span>
-        <span class="hl-damage">💥 四杀</span>
-      </div>
-    </div>
+
   </div>
 </div>
 
