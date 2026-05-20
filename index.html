@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>唐保光，上号打瓦！</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: #0f0f0f;
+    min-height: 100vh;
+    overflow-x: hidden;
+    color: #fff;
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="%23ff4655" stroke-width="2"/><line x1="12" y1="2" x2="12" y2="8" stroke="%23ff4655" stroke-width="2"/><line x1="12" y1="16" x2="12" y2="22" stroke="%23ff4655" stroke-width="2"/><line x1="2" y1="12" x2="8" y2="12" stroke="%23ff4655" stroke-width="2"/><line x1="16" y1="12" x2="22" y2="12" stroke="%23ff4655" stroke-width="2"/></svg>') 12 12, auto;
+  }
+
+  /* === Particles Background === */
+  #particles {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* === Main Container === */
+  .main-container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  /* === Glitch Title === */
+  .title-wrapper {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .name {
+    font-size: clamp(2.5rem, 8vw, 6rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, #ff4655 0%, #ff6b7a 30%, #ff4655 60%, #ff8a95 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 3s ease-in-out infinite;
+    text-shadow: none;
+    position: relative;
+    display: inline-block;
+  }
+
+  .name::after {
+    content: '唐保光';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, #ff4655 0%, #ff6b7a 30%, #ff4655 60%, #ff8a95 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: glitch 0.3s infinite;
+    opacity: 0.5;
+    clip-path: inset(40% 0 48% 0);
+    filter: blur(1px);
+  }
+
+  @keyframes glitch {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -1px); }
+    60% { transform: translate(2px, 1px); }
+    80% { transform: translate(1px, -2px); }
+  }
+
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .call-to-action {
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    font-weight: 900;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    animation: pulse 1.5s ease-in-out infinite;
+    margin-top: 10px;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; text-shadow: 0 0 20px rgba(255, 70, 85, 0.5); }
+    50% { opacity: 0.7; text-shadow: 0 0 40px rgba(255, 70, 85, 0.8); }
+  }
+
+  /* === Agent Select Style Cards === */
+  .agent-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 30px 0;
+  }
+
+  .agent-card {
+    width: 100px;
+    height: 130px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 70, 85, 0.3);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+  }
+
+  .agent-card:hover {
+    border-color: #ff4655;
+    transform: translateY(-10px);
+    box-shadow: 0 10px 40px rgba(255, 70, 85, 0.3);
+  }
+
+  .agent-card .agent-icon {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+  }
+
+  .agent-card .agent-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #ccc;
+  }
+
+  .agent-card.locked {
+    opacity: 0.4;
+    border-style: dashed;
+  }
+
+  .agent-card.locked::after {
+    content: '🔒';
+    position: absolute;
+    font-size: 1.5rem;
+  }
+
+  .agent-card.selected {
+    border-color: #ff4655;
+    box-shadow: 0 0 30px rgba(255, 70, 85, 0.5);
+    animation: selectedGlow 0.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes selectedGlow {
+    from { box-shadow: 0 0 20px rgba(255, 70, 85, 0.4); }
+    to { box-shadow: 0 0 45px rgba(255, 70, 85, 0.7); }
+  }
+
+  /* === Big Launch Button === */
+  .launch-btn {
+    position: relative;
+    padding: 20px 60px;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #fff;
+    background: linear-gradient(135deg, #ff4655 0%, #c73e4a 100%);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+    overflow: hidden;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .launch-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 60px rgba(255, 70, 85, 0.6);
+  }
+
+  .launch-btn:active {
+    transform: scale(0.95);
+  }
+
+  .launch-btn::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%);
+    animation: shine 2s infinite;
+  }
+
+  @keyframes shine {
+    0% { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) rotate(45deg); }
+  }
+
+  .launch-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    animation: none;
+  }
+
+  .launch-btn:disabled::before { display: none; }
+
+  /* === Countdown Timer === */
+  .countdown {
+    display: none;
+    font-size: 5rem;
+    font-weight: 900;
+    color: #ff4655;
+    text-shadow: 0 0 40px rgba(255, 70, 85, 0.5);
+    animation: countPulse 1s ease-in-out infinite;
+    margin: 20px 0;
+  }
+
+  .countdown.active { display: block; }
+
+  @keyframes countPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  /* === Status Bar === */
+  .status-bar {
+    position: fixed;
+    bottom: 0; left: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.8);
+    border-top: 2px solid rgba(255, 70, 85, 0.5);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    font-size: 0.85rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .status-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #00ff88;
+    animation: dotBlink 2s infinite;
+  }
+
+  .status-dot.offline { background: #ff4655; animation: none; }
+
+  @keyframes dotBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* === Match Found Overlay === */
+  .overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9);
+    z-index: 100;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .overlay.active { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .match-text {
+    font-size: 4rem;
+    font-weight: 900;
+    color: #ff4655;
+    animation: matchPulse 0.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes matchPulse {
+    from { text-shadow: 0 0 20px #ff4655; transform: scale(1); }
+    to { text-shadow: 0 0 60px #ff4655, 0 0 100px #ff4655; transform: scale(1.05); }
+  }
+
+  .match-subtitle {
+    font-size: 1.2rem;
+    color: #aaa;
+    margin-top: 10px;
+  }
+
+  /* === Floating messages === */
+  .floating-msgs {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+  }
+
+  .float-msg {
+    background: rgba(0,0,0,0.8);
+    border: 1px solid rgba(255,70,85,0.5);
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    animation: slideIn 0.3s ease, fadeOut 0.5s 3s forwards;
+    backdrop-filter: blur(10px);
+  }
+
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  @keyframes fadeOut {
+    to { opacity: 0; transform: translateX(50%); }
+  }
+
+  /* === Responsive === */
+  @media (max-width: 600px) {
+    .agent-row { gap: 10px; }
+    .agent-card { width: 70px; height: 100px; }
+    .agent-card .agent-icon { font-size: 1.8rem; }
+    .launch-btn { padding: 15px 40px; font-size: 1.3rem; }
+    .match-text { font-size: 2.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<div class="main-container">
+  <div class="title-wrapper">
+    <div class="name">唐保光</div>
+    <div class="call-to-action">上号打瓦！</div>
+  </div>
+
+  <div class="agent-row" id="agentRow">
+    <div class="agent-card selected" data-agent="jett">
+      <div class="agent-icon">💨</div>
+      <div class="agent-name">捷风</div>
+    </div>
+    <div class="agent-card" data-agent="raze">
+      <div class="agent-icon">💣</div>
+      <div class="agent-name">雷兹</div>
+    </div>
+    <div class="agent-card" data-agent="sage">
+      <div class="agent-icon">🧱</div>
+      <div class="agent-name">贤者</div>
+    </div>
+    <div class="agent-card" data-agent="reyna">
+      <div class="agent-icon">👁️</div>
+      <div class="agent-name">芮娜</div>
+    </div>
+    <div class="agent-card locked">
+      <div class="agent-icon">❓</div>
+      <div class="agent-name">???</div>
+    </div>
+  </div>
+
+  <button class="launch-btn" id="launchBtn" onclick="startMatch()">
+    ⚡ 开始匹配
+  </button>
+
+  <div class="countdown" id="countdown"></div>
+</div>
+
+<div class="status-bar">
+  <div class="status-item">
+    <span class="status-dot" id="statusDot"></span>
+    <span id="statusText">唐保光 - 在线</span>
+  </div>
+  <div class="status-item">
+    <span>🎯 排位分: <strong style="color:#ff4655" id="rankScore">钻石 III</strong></span>
+  </div>
+  <div class="status-item">
+    <span>⏰ <span id="clock">--:--:--</span></span>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="match-text" id="overlayText">⚔️ 已匹配到对局！</div>
+  <div class="match-subtitle">唐保光，准备好了吗？</div>
+  <button class="launch-btn" style="margin-top:30px;font-size:1.2rem;padding:15px 40px;" onclick="acceptMatch()">
+    接受
+  </button>
+</div>
+
+<div class="floating-msgs" id="floatingMsgs"></div>
+
+<script>
+// === Particle System ===
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+class Particle {
+  constructor() {
+    this.reset();
+  }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 2 + 0.5;
+    this.speedX = (Math.random() - 0.5) * 0.5;
+    this.speedY = (Math.random() - 0.5) * 0.5;
+    this.opacity = Math.random() * 0.5 + 0.1;
+    this.color = Math.random() > 0.7 ? '255, 70, 85' : '255, 255, 255';
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+      this.reset();
+    }
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+    ctx.fill();
+  }
+}
+
+for (let i = 0; i < 120; i++) {
+  particles.push(new Particle());
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    p.update();
+    p.draw();
+  });
+
+  // Draw connections
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 100) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(255, 70, 85, ${0.05 * (1 - dist / 100)})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(animate);
+}
+animate();
+
+// === Agent Selection ===
+document.querySelectorAll('.agent-card:not(.locked)').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.agent-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    const agent = card.dataset.agent;
+    const names = { jett: '捷风', raze: '雷兹', sage: '贤者', reyna: '芮娜' };
+    addFloatingMsg(`🎯 已锁定 ${names[agent] || agent}`);
+  });
+});
+
+// === Match Flow ===
+let matchState = 'idle';
+
+function startMatch() {
+  if (matchState !== 'idle') return;
+  matchState = 'matching';
+  const btn = document.getElementById('launchBtn');
+  btn.textContent = '🔍 匹配中...';
+  btn.disabled = true;
+  document.getElementById('statusText').textContent = '唐保光 - 匹配中';
+  document.getElementById('statusDot').classList.add('offline');
+  addFloatingMsg('🔍 正在为你寻找对局...');
+
+  // Random match time 1-3 seconds
+  const matchTime = Math.random() * 2000 + 1000;
+  setTimeout(() => {
+    document.getElementById('overlay').classList.add('active');
+  }, matchTime);
+}
+
+function acceptMatch() {
+  document.getElementById('overlay').classList.remove('active');
+  matchState = 'countdown';
+  document.getElementById('launchBtn').style.display = 'none';
+  const cd = document.getElementById('countdown');
+  cd.classList.add('active');
+  document.getElementById('statusText').textContent = '唐保光 - 加载中';
+  addFloatingMsg('✅ 对局已接受！正在进入...');
+
+  let count = 5;
+  cd.textContent = count;
+  const interval = setInterval(() => {
+    count--;
+    if (count <= 0) {
+      clearInterval(interval);
+      cd.textContent = '';
+      cd.classList.remove('active');
+      document.getElementById('launchBtn').style.display = '';
+      document.getElementById('launchBtn').textContent = '⚡ 开始匹配';
+      document.getElementById('launchBtn').disabled = false;
+      document.getElementById('statusText').textContent = '唐保光 - 在线';
+      document.getElementById('statusDot').classList.remove('offline');
+      matchState = 'idle';
+      addFloatingMsg('🏆 GGWP！再来一局？');
+    } else {
+      cd.textContent = count;
+    }
+  }, 1000);
+}
+
+// === Floating Messages ===
+const fakeMsgs = [
+  '💬 队友: 保光快来！就差你了！',
+  '🎯 好友: 上号上号！',
+  '💬 群聊: @唐保光 打瓦了打瓦了',
+  '🔥 好友: 今晚通宵冲分！',
+  '💬 队友: 保光carry我们！',
+  '🎮 好友: 五缺一，速度！',
+  '💬 群聊: 唐保光再不来我们开了',
+  '⚡ 好友: 钻石局需要你',
+];
+
+let msgIndex = 0;
+setInterval(() => {
+  if (matchState === 'idle') {
+    addFloatingMsg(fakeMsgs[msgIndex % fakeMsgs.length]);
+    msgIndex++;
+  }
+}, 8000);
+
+function addFloatingMsg(text) {
+  const container = document.getElementById('floatingMsgs');
+  const msg = document.createElement('div');
+  msg.className = 'float-msg';
+  msg.textContent = text;
+  container.appendChild(msg);
+  setTimeout(() => msg.remove(), 3500);
+
+  // Limit messages
+  while (container.children.length > 4) {
+    container.firstChild.remove();
+  }
+}
+
+// === Clock ===
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.toLocaleTimeString('zh-CN', { hour12: false });
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// === Keyboard shortcut ===
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && matchState === 'idle') {
+    startMatch();
+  }
+  if (e.key === 'Enter' && document.getElementById('overlay').classList.contains('active')) {
+    acceptMatch();
+  }
+});
+
+// === Initial floating msg ===
+setTimeout(() => addFloatingMsg('💬 好友: 保光，上号！'), 1500);
+</script>
+
+</body>
+</html>
