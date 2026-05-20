@@ -341,13 +341,266 @@
     to { opacity: 0; transform: translateX(50%); }
   }
 
-  /* === Responsive === */
+  /* === Training Mode Button === */
+  .train-btn {
+    padding: 14px 40px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #ff4655;
+    background: transparent;
+    border: 2px solid rgba(255, 70, 85, 0.5);
+    border-radius: 8px;
+    cursor: pointer;
+    letter-spacing: 0.06em;
+    transition: all 0.3s ease;
+    font-family: 'Noto Sans SC', sans-serif;
+    margin-top: 12px;
+  }
+  .train-btn:hover {
+    background: rgba(255, 70, 85, 0.15);
+    border-color: #ff4655;
+    box-shadow: 0 0 30px rgba(255, 70, 85, 0.3);
+  }
+
+  /* === Shooting Game Overlay === */
+  #shootingGame {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 200;
+    background: #0a0a0a;
+    cursor: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  #shootingGame.active { display: block; }
+
+  #gameArea {
+    position: relative;
+    width: 100%; height: 100%;
+    overflow: hidden;
+  }
+
+  /* Crosshair */
+  #crosshair {
+    position: fixed;
+    pointer-events: none;
+    z-index: 300;
+    transform: translate(-50%, -50%);
+    width: 28px; height: 28px;
+  }
+  #crosshair::before, #crosshair::after {
+    content: '';
+    position: absolute;
+    background: #00ff88;
+  }
+  #crosshair::before {
+    width: 2px; height: 100%;
+    left: 50%; top: 0;
+    transform: translateX(-50%);
+  }
+  #crosshair::after {
+    height: 2px; width: 100%;
+    top: 50%; left: 0;
+    transform: translateY(-50%);
+  }
+  #crosshair .ring {
+    position: absolute;
+    width: 18px; height: 18px;
+    border: 2px solid rgba(0, 255, 136, 0.7);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  #crosshair .dot {
+    position: absolute;
+    width: 3px; height: 3px;
+    background: #00ff88;
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Target */
+  .target {
+    position: absolute;
+    width: 60px; height: 60px;
+    transform: translate(-50%, -50%);
+    cursor: none;
+    animation: targetPop 0.25s ease-out;
+    transition: transform 0.15s ease;
+  }
+  .target:hover { transform: translate(-50%, -50%) scale(1.1); }
+  .target .outer {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ff4655 0%, #c73e4a 50%, #8b1a22 100%);
+    border: 3px solid #ff2040;
+    box-shadow: 0 0 20px rgba(255, 70, 85, 0.5);
+    transition: all 0.1s ease;
+  }
+  .target .inner {
+    position: absolute;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: #fff;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid #ccc;
+  }
+  .target .inner::after {
+    content: '';
+    position: absolute;
+    width: 8px; height: 8px;
+    background: #ff4655;
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  @keyframes targetPop {
+    from { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  }
+
+  /* Hit effect */
+  .hit-effect {
+    position: absolute;
+    pointer-events: none;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: #ff4655;
+    text-shadow: 0 0 10px rgba(255, 70, 85, 0.8);
+    animation: hitFloat 0.6s ease-out forwards;
+    z-index: 250;
+  }
+  @keyframes hitFloat {
+    0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.8; transform: translate(-50%, -80%) scale(1.3); }
+    100% { opacity: 0; transform: translate(-50%, -120%) scale(0.8); }
+  }
+
+  /* Miss indicator */
+  .miss-indicator {
+    position: absolute;
+    pointer-events: none;
+    width: 20px; height: 20px;
+    z-index: 250;
+    animation: missFade 0.4s ease-out forwards;
+  }
+  .miss-indicator::before, .miss-indicator::after {
+    content: '';
+    position: absolute;
+    background: rgba(255,255,255,0.5);
+  }
+  .miss-indicator::before {
+    width: 2px; height: 100%;
+    left: 50%; top: 0;
+    transform: translateX(-50%) rotate(45deg);
+  }
+  .miss-indicator::after {
+    width: 2px; height: 100%;
+    left: 50%; top: 0;
+    transform: translateX(-50%) rotate(-45deg);
+  }
+  @keyframes missFade {
+    from { opacity: 0.8; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.5); }
+  }
+
+  /* Game HUD */
+  #gameHUD {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 210;
+    pointer-events: none;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(10px);
+  }
+  #gameHUD .hud-item {
+    text-align: center;
+  }
+  #gameHUD .hud-label {
+    font-size: 0.75rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  #gameHUD .hud-value {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #fff;
+  }
+  #gameHUD .hud-value.timer-warn {
+    color: #ff4655;
+    animation: pulse 0.5s ease-in-out infinite;
+  }
+
+  /* Game over screen */
+  #gameOver {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 250;
+    background: rgba(0,0,0,0.92);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+  }
+  #gameOver.active { display: flex; }
+  #gameOver .result-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #ff4655;
+    margin-bottom: 10px;
+  }
+  #gameOver .result-stats {
+    display: flex;
+    gap: 40px;
+    margin: 30px 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  #gameOver .stat {
+    text-align: center;
+  }
+  #gameOver .stat-val {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: #fff;
+  }
+  #gameOver .stat-lbl {
+    font-size: 0.85rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  #gameOver .rank-badge {
+    font-size: 1.5rem;
+    font-weight: 900;
+    padding: 10px 30px;
+    border-radius: 8px;
+    margin: 20px 0;
+  }
+
+  /* Responsive */
   @media (max-width: 600px) {
     .agent-row { gap: 10px; }
     .agent-card { width: 70px; height: 100px; }
     .agent-card .agent-icon { font-size: 1.8rem; }
     .launch-btn { padding: 15px 40px; font-size: 1.3rem; }
     .match-text { font-size: 2.5rem; }
+    #gameHUD .hud-value { font-size: 1.3rem; }
+    #gameHUD { padding: 10px 15px; }
+    #gameOver .stat-val { font-size: 2rem; }
+    .target { width: 45px; height: 45px; }
   }
 </style>
 </head>
@@ -388,6 +641,10 @@
     ⚡ 开始匹配
   </button>
 
+  <button class="train-btn" onclick="startTraining()">
+    🎯 训练场
+  </button>
+
   <div class="countdown" id="countdown"></div>
 </div>
 
@@ -413,6 +670,61 @@
 </div>
 
 <div class="floating-msgs" id="floatingMsgs"></div>
+
+<!-- === Shooting Game === -->
+<div id="shootingGame">
+  <div id="gameArea"></div>
+  <div id="crosshair"><div class="ring"></div><div class="dot"></div></div>
+  <div id="gameHUD">
+    <div class="hud-item">
+      <div class="hud-label">得分</div>
+      <div class="hud-value" id="gameScore">0</div>
+    </div>
+    <div class="hud-item">
+      <div class="hud-label">命中</div>
+      <div class="hud-value" id="gameHits">0</div>
+    </div>
+    <div class="hud-item">
+      <div class="hud-label">精准度</div>
+      <div class="hud-value" id="gameAccuracy">100%</div>
+    </div>
+    <div class="hud-item">
+      <div class="hud-label">时间</div>
+      <div class="hud-value" id="gameTimer">30</div>
+    </div>
+    <div class="hud-item">
+      <button onclick="endGame()" style="pointer-events:all;background:transparent;border:1px solid rgba(255,70,85,0.5);color:#ff4655;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:0.9rem;font-family:inherit;">退出</button>
+    </div>
+  </div>
+  <div id="gameOver">
+    <div class="result-title" id="resultTitle">训练结束</div>
+    <div class="rank-badge" id="rankBadge" style="background:rgba(255,70,85,0.2);color:#ff4655;">评定中...</div>
+    <div class="result-stats">
+      <div class="stat">
+        <div class="stat-val" id="finalScore">0</div>
+        <div class="stat-lbl">得分</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="finalHits">0</div>
+        <div class="stat-lbl">命中</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="finalMisses">0</div>
+        <div class="stat-lbl">未命中</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="finalAccuracy">0%</div>
+        <div class="stat-lbl">精准度</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="finalMaxCombo">0</div>
+        <div class="stat-lbl">最高连击</div>
+      </div>
+    </div>
+    <button class="launch-btn" style="margin-top:10px;font-size:1rem;padding:12px 30px;" onclick="startTraining()">🔄 再来一局</button>
+    <button class="train-btn" style="margin-top:10px;" onclick="closeGame()">返回主页</button>
+  </div>
+</div>
 
 <script>
 // === Particle System ===
@@ -598,6 +910,254 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && document.getElementById('overlay').classList.contains('active')) {
     acceptMatch();
   }
+});
+
+// ==================== SHOOTING GAME ====================
+let gameActive = false;
+let gameScore = 0;
+let gameHits = 0;
+let gameMisses = 0;
+let gameShots = 0;
+let gameCombo = 0;
+let gameMaxCombo = 0;
+let gameTime = 30;
+let gameTimer = null;
+let targetSpawnTimer = null;
+let activeTargets = [];
+
+const gameEl = document.getElementById('shootingGame');
+const gameArea = document.getElementById('gameArea');
+const crosshair = document.getElementById('crosshair');
+const gameOverEl = document.getElementById('gameOver');
+
+// Track mouse for crosshair
+document.addEventListener('mousemove', (e) => {
+  if (gameActive) {
+    crosshair.style.left = e.clientX + 'px';
+    crosshair.style.top = e.clientY + 'px';
+  }
+});
+
+function startTraining() {
+  // Reset state
+  gameScore = 0;
+  gameHits = 0;
+  gameMisses = 0;
+  gameShots = 0;
+  gameCombo = 0;
+  gameMaxCombo = 0;
+  gameTime = 30;
+  gameActive = true;
+  activeTargets = [];
+
+  // UI reset
+  gameEl.classList.add('active');
+  gameOverEl.classList.remove('active');
+  gameArea.innerHTML = '';
+  crosshair.style.display = 'block';
+  updateHUD();
+
+  // Start timer
+  gameTimer = setInterval(() => {
+    gameTime--;
+    updateHUD();
+    if (gameTime <= 0) {
+      endGame();
+    }
+  }, 1000);
+
+  // Start spawning targets
+  spawnTarget();
+}
+
+function spawnTarget() {
+  if (!gameActive) return;
+
+  // Remove expired targets that weren't hit (count as knowledge, not miss)
+  // Actually, let's just spawn new targets periodically
+
+  const target = document.createElement('div');
+  target.className = 'target';
+
+  // Random position (avoid edges and HUD area)
+  const padding = 60;
+  const x = Math.random() * (window.innerWidth - padding * 2) + padding;
+  const y = Math.random() * (window.innerHeight - padding * 2 - 80) + padding + 80;
+
+  target.style.left = x + 'px';
+  target.style.top = y + 'px';
+
+  // Different target sizes for difficulty
+  const sizes = [40, 50, 60, 70];
+  const size = sizes[Math.floor(Math.random() * sizes.length)];
+  target.style.width = size + 'px';
+  target.style.height = size + 'px';
+
+  // Point value based on size (smaller = more points)
+  const points = size <= 45 ? 30 : size <= 55 ? 20 : 10;
+
+  target.innerHTML = '<div class="outer"><div class="inner"></div></div>';
+
+  target.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!gameActive) return;
+    hitTarget(target, points, e.clientX, e.clientY);
+  });
+
+  gameArea.appendChild(target);
+  activeTargets.push({ el: target, points, lifetime: 0 });
+
+  // Remove target after lifetime (1.5 - 2.5 seconds)
+  const lifetime = Math.random() * 1000 + 1500;
+  const targetRef = target;
+  setTimeout(() => {
+    if (targetRef.parentNode && gameActive) {
+      targetRef.remove();
+      activeTargets = activeTargets.filter(t => t.el !== targetRef);
+    }
+  }, lifetime);
+
+  // Schedule next spawn
+  if (gameActive) {
+    const nextDelay = Math.random() * 400 + 300; // 300-700ms
+    targetSpawnTimer = setTimeout(spawnTarget, nextDelay);
+  }
+}
+
+function hitTarget(target, points, cx, cy) {
+  gameScore += points;
+  gameHits++;
+  gameShots++;
+  gameCombo++;
+  if (gameCombo > gameMaxCombo) gameMaxCombo = gameCombo;
+
+  // Hit effect
+  const hitEl = document.createElement('div');
+  hitEl.className = 'hit-effect';
+  hitEl.textContent = '+' + points;
+  hitEl.style.left = cx + 'px';
+  hitEl.style.top = cy + 'px';
+  gameArea.appendChild(hitEl);
+  setTimeout(() => hitEl.remove(), 600);
+
+  // Combo indicator for 3+
+  if (gameCombo >= 3) {
+    const comboEl = document.createElement('div');
+    comboEl.className = 'hit-effect';
+    comboEl.textContent = gameCombo + '连击!';
+    comboEl.style.color = '#ffcc00';
+    comboEl.style.fontSize = '1rem';
+    comboEl.style.left = (cx + 30) + 'px';
+    comboEl.style.top = (cy - 20) + 'px';
+    gameArea.appendChild(comboEl);
+    setTimeout(() => comboEl.remove(), 800);
+  }
+
+  // Remove target with pop
+  target.style.transform = 'translate(-50%, -50%) scale(1.5)';
+  target.style.opacity = '0';
+  target.style.transition = 'all 0.15s ease';
+  setTimeout(() => {
+    target.remove();
+    activeTargets = activeTargets.filter(t => t.el !== target);
+  }, 150);
+
+  updateHUD();
+}
+
+// Click on background = miss
+gameArea.addEventListener('click', (e) => {
+  if (!gameActive) return;
+  // Ignore clicks on targets (handled above)
+  if (e.target.closest('.target')) return;
+  if (e.target.closest('#gameHUD')) return;
+
+  gameShots++;
+  gameMisses++;
+  gameCombo = 0;
+
+  // Miss indicator
+  const missEl = document.createElement('div');
+  missEl.className = 'miss-indicator';
+  missEl.style.left = (e.clientX - 10) + 'px';
+  missEl.style.top = (e.clientY - 10) + 'px';
+  gameArea.appendChild(missEl);
+  setTimeout(() => missEl.remove(), 400);
+
+  updateHUD();
+});
+
+function updateHUD() {
+  document.getElementById('gameScore').textContent = gameScore;
+  document.getElementById('gameHits').textContent = gameHits;
+  const acc = gameShots > 0 ? Math.round((gameHits / gameShots) * 100) : 100;
+  document.getElementById('gameAccuracy').textContent = acc + '%';
+
+  const timerEl = document.getElementById('gameTimer');
+  timerEl.textContent = gameTime;
+  if (gameTime <= 5) {
+    timerEl.classList.add('timer-warn');
+  } else {
+    timerEl.classList.remove('timer-warn');
+  }
+}
+
+function endGame() {
+  gameActive = false;
+  clearInterval(gameTimer);
+  clearTimeout(targetSpawnTimer);
+
+  // Remove all targets
+  gameArea.innerHTML = '';
+  activeTargets = [];
+  crosshair.style.display = 'none';
+
+  // Calculate stats
+  const accuracy = gameShots > 0 ? Math.round((gameHits / gameShots) * 100) : 0;
+  let rank, rankColor;
+  if (accuracy >= 90 && gameScore >= 300) { rank = '辐射'; rankColor = '#ffd700'; }
+  else if (accuracy >= 75 && gameScore >= 200) { rank = '神话'; rankColor = '#e040fb'; }
+  else if (accuracy >= 60 && gameScore >= 120) { rank = '钻石'; rankColor = '#448aff'; }
+  else if (accuracy >= 45 && gameScore >= 60) { rank = '黄金'; rankColor = '#ffc107'; }
+  else if (accuracy >= 30) { rank = '白银'; rankColor = '#9e9e9e'; }
+  else { rank = '青铜'; rankColor = '#cd7f32'; }
+
+  // Show results
+  document.getElementById('finalScore').textContent = gameScore;
+  document.getElementById('finalHits').textContent = gameHits;
+  document.getElementById('finalMisses').textContent = gameMisses;
+  document.getElementById('finalAccuracy').textContent = accuracy + '%';
+  document.getElementById('finalMaxCombo').textContent = gameMaxCombo;
+  document.getElementById('rankBadge').textContent = '🏅 ' + rank;
+  document.getElementById('rankBadge').style.color = rankColor;
+  document.getElementById('rankBadge').style.background = rankColor.replace(')', ',0.15)').replace('rgb', 'rgba');
+
+  gameOverEl.classList.add('active');
+
+  addFloatingMsg('🎯 训练场得分: ' + gameScore + ' | ' + rank);
+}
+
+function closeGame() {
+  gameActive = false;
+  clearInterval(gameTimer);
+  clearTimeout(targetSpawnTimer);
+  gameArea.innerHTML = '';
+  activeTargets = [];
+  crosshair.style.display = 'none';
+  gameEl.classList.remove('active');
+  gameOverEl.classList.remove('active');
+}
+
+// ESC to exit game
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && gameActive) {
+    closeGame();
+  }
+});
+
+// Prevent right-click context menu in game
+gameArea.addEventListener('contextmenu', (e) => {
+  if (gameActive) e.preventDefault();
 });
 
 // === Initial floating msg ===
